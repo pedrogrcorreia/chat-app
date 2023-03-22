@@ -20,8 +20,14 @@ io.on('connection', (socket) => {
 
     socket.emit('message', 'Welcome!')
 
+    socket.broadcast.emit('message', 'New user connected!')
+
     socket.on('sendMessage', (message) => {
         io.emit('message', message)
+    })
+
+    socket.on('disconnect', () => {
+        io.emit('message', 'User disconnected!')
     })
 })
 
