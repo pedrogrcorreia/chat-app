@@ -14,8 +14,6 @@ const publicPath = path.join(__dirname, '../public')
 
 app.use(express.static(publicPath))
 
-let count = 0
-
 io.on('connection', (socket) => {
     console.log('New WebSocket connection')
 
@@ -35,7 +33,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('sendLocation', (coords, callback) => {
-        io.emit('message', `http://google.com/maps?q=${coords.latitude},${coords.longitude}`)
+        io.emit('locationMessage', `http://google.com/maps?q=${coords.latitude},${coords.longitude}`)
         callback()
     })
 
