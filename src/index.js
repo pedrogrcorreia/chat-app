@@ -4,6 +4,12 @@ const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
 const { generateMessage, generateLocationMessage } = require('./utils/messages')
+const {
+    addUser,
+    removeUser,
+    getUser,
+    getUsersInRoom
+} = require('./utils/users')
 
 const port = process.env.PORT || 3000
 
@@ -18,9 +24,12 @@ app.use(express.static(publicPath))
 io.on('connection', (socket) => {
     console.log('New WebSocket connection')
 
-    socket.emit('message', generateMessage('Welcome!'))
+    socket.on('join', ({username, room}) => {
+        socket.join(room)
 
-    socket.broadcast.emit('message', generateMessage('New user connected!'))
+        socket.emit('message', generateMessage(`Welcome ${username}!`))
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`))
+    })
 
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter()
