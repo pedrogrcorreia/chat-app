@@ -22,10 +22,8 @@ const publicPath = path.join(__dirname, '../public')
 app.use(express.static(publicPath))
 
 io.on('connection', (socket) => {
-    console.log('New WebSocket connection')
 
     socket.on('join', (options, callback) => {
-        console.log('Options: ', options)
 
         const { error, user } = addUser( {id: socket.id, ...options} )
 
@@ -38,6 +36,10 @@ io.on('connection', (socket) => {
         socket.emit('message', generateMessage('Admin', `Welcome ${user.username}!`))
         socket.broadcast.to(user.room).emit('message', generateMessage('Admin', `${user.username} has joined!`))
 
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        })
         callback()
     })
 
@@ -65,9 +67,11 @@ io.on('connection', (socket) => {
 
         if(user){
             io.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left!`))
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            })
         }
-
-        
     })
 })
 
