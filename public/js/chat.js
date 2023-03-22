@@ -14,11 +14,11 @@ const locationTemplate = document.querySelector('#location-template').innerHTML
 
 //Options
 
-const {username, room} = Qs.parse(location.search, { ignoreQueryPrefix: true})
+const {username, room} = Qs.parse(location.search, { ignoreQueryPrefix: true} )
 
 socket.on('message', (message) => {
-    console.log(message)
     const html = Mustache.render(messageTemplate, {
+        username: message.username,
         message: message.text,
         createdAt: moment(message.createdAt).format('HH:mm')
     })
@@ -27,6 +27,7 @@ socket.on('message', (message) => {
 
 socket.on('locationMessage', (location) => {
     const html = Mustache.render(locationTemplate, {
+        username: location.username,
         url: location.url,
         createdAt: moment(location.createdAt).format('HH:mm')
     })
@@ -76,4 +77,9 @@ $sendLocationButton.addEventListener('click', () => {
     })
 })
 
-socket.emit('join', { username, room })
+socket.emit('join', { username, room }, (error) => {
+    if(error){
+        alert(error)
+        location.href = '/'
+    }
+})
