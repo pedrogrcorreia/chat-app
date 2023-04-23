@@ -1,5 +1,5 @@
 # Chat App
-Real time chat application built with NodeJS.
+Real time chat application built with NodeJS, following [this course](https://www.udemy.com/course/the-complete-nodejs-developer-course-2).
 
 ## Overview
 App built taking the advantages of Socket.io
